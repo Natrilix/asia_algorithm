@@ -1,0 +1,47 @@
+[
+  {
+    "mrn": "10004821",
+    "familyName": "Testpatient",
+    "givenName": "Alex",
+    "dateOfBirth": "1978-02-03",
+    "sex": "M",
+    "ward": "Spinal Unit 4B",
+    "encounter": "ENC-2026-004821"
+  },
+  {
+    "mrn": "10007733",
+    "familyName": "Sampleperson",
+    "givenName": "Robin",
+    "dateOfBirth": "1991-11-19",
+    "sex": "F",
+    "ward": "Spinal Unit 4B",
+    "encounter": "ENC-2026-007733"
+  },
+  {
+    "mrn": "10011290",
+    "familyName": "Demonstration",
+    "givenName": "Jamie Lee",
+    "dateOfBirth": "1965-06-30",
+    "sex": "F",
+    "ward": "Rehabilitation 2A",
+    "encounter": "ENC-2026-011290"
+  },
+  {
+    "mrn": "10015004",
+    "familyName": "Fictitious",
+    "givenName": "Sam",
+    "dateOfBirth": "2003-09-12",
+    "sex": "M",
+    "ward": "ICU",
+    "encounter": "ENC-2026-015004"
+  },
+  {
+    "mrn": "10019876",
+    "familyName": "Placeholder",
+    "givenName": "Morgan",
+    "dateOfBirth": "1954-01-25",
+    "sex": "X",
+    "ward": "Rehabilitation 2A",
+    "encounter": "ENC-2026-019876"
+  }
+]

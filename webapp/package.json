@@ -1,0 +1,10 @@
+{
+  "name": "isncsci-worksheet",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static ISNCSCI worksheet. No dependencies and no build step - serve this directory as-is.",
+  "scripts": {
+    "serve": "npx --yes http-server . -p 8080 -c-1"
+  }
+}

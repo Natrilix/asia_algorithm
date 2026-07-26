@@ -3,7 +3,8 @@
     "dist/**",
     "specs/*.json",
     "node_modules/**",
-    "package-lock.json"
+    "package-lock.json",
+    "webapp/vendor/**"
   ],
   "ignoreWords": [
     "xdescribe"
@@ -14,6 +15,52 @@
     "isncsci",
     "prebuild",
     "sourcemap",
-    "zpp"
+    "zpp",
+
+    "appbar",
+    "discoverability",
+    "dorsiflexors",
+    "nonkey",
+    "starrable",
+    "UEMS",
+
+    "Entra",
+    "MSAL",
+    "nosniff",
+    "PKCE",
+    "pkce",
+    "powerbi",
+    "recordset",
+    "SEARCHSTRING",
+    "TOPN",
+    "xlink",
+
+    "nendobj",
+    "nendstream",
+    "startxref",
+    "unmappable",
+
+    "Sampleperson",
+    "TESTPATIENT",
+    "Testpatient",
+
+    "authorisation",
+    "authorised",
+    "behaviour",
+    "licence",
+    "normalisation",
+    "normalise",
+    "normalised",
+    "parameterised",
+    "rasterisation",
+    "rasterised",
+    "rasteriser",
+    "Rasterises",
+    "sanitise",
+    "Sanitise",
+    "sanitised",
+    "sanitises",
+    "serialisable",
+    "Serialises"
   ]
 }

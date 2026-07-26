@@ -9,6 +9,7 @@ This algorithm is designed to produce a spinal cord injury classification consis
 - [Interfaces](#Interfaces)
   - [Values](#Values)
 - [Demo](#Demo)
+- [Web worksheet](#Web-worksheet)
 
 
 ## Import library
@@ -252,3 +253,31 @@ You can view the test for `*.html` file by opening it on any modern browser that
 - `demo/cjs.spec.js`: demo using CommonJS syntax
 - `demo/esm.spec.ts`: demo using ES module and TypeScript syntax
 - `demo/iife-and-esm.html`: demo using ES module and IIFE on the browser
+
+
+## Web worksheet
+This repository also contains a browser-based ISNCSCI examination form built on
+the algorithm above, in [`webapp/`](webapp/README.md).
+
+It is a static site — no build step, no dependencies, no CDN — that adds what an
+institution needs on top of the classification itself:
+
+- a full data-entry worksheet with live classification and keyboard-first entry;
+- three points of patient identification, enforced before export and printed on
+  every page of the produced form;
+- lookup of currently admitted patients from a Power BI semantic model (with no
+  backend at all), an internal REST endpoint, or the optional MSSQL service in
+  [`server/`](server/README.md);
+- export to a vector PDF, PNG or SVG, generated entirely in the browser.
+
+```
+npm run serve:webapp     # http://localhost:8080, demo patient data
+npm run test:webapp      # model, render and lookup checks
+```
+
+See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for hosting, configuration and
+the information-governance notes.
+
+The worksheet uses a committed build of this library at
+`webapp/vendor/isncsci.esm.js`. After changing anything under `src/`, run
+`npm run build:webapp-vendor` and commit the result.

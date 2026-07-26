@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ISNCSCI worksheet</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="appbar">
+  <div class="appbar__title">
+    <h1 id="institution-name">ISNCSCI worksheet</h1>
+    <p>International Standards for Neurological Classification of Spinal Cord Injury</p>
+  </div>
+  <div class="appbar__actions">
+    <button type="button" id="action-new" class="btn">New exam</button>
+    <button type="button" id="action-import" class="btn">Open…</button>
+    <button type="button" id="action-save-json" class="btn">Save data</button>
+    <button type="button" id="action-preview" class="btn btn--primary">Preview &amp; export</button>
+  </div>
+</header>
+
+<section class="patient" aria-labelledby="patient-heading">
+  <div class="patient__lookup">
+    <h2 id="patient-heading">Patient identification</h2>
+    <div class="lookup" id="lookup-region">
+      <label for="lookup-query" class="lookup__label">Find an admitted patient</label>
+      <div class="lookup__controls">
+        <input type="search" id="lookup-query" autocomplete="off" spellcheck="false"
+               placeholder="MRN or family name">
+        <button type="button" id="lookup-search" class="btn">Search</button>
+      </div>
+      <p class="lookup__status" id="lookup-status" role="status" aria-live="polite"></p>
+      <ul class="lookup__results" id="lookup-results" hidden></ul>
+    </div>
+  </div>
+
+  <div class="patient__fields">
+    <div class="field field--required">
+      <label for="patient-familyName">Family name</label>
+      <input type="text" id="patient-familyName" data-patient="familyName" autocomplete="off">
+    </div>
+    <div class="field field--required">
+      <label for="patient-givenName">Given name(s)</label>
+      <input type="text" id="patient-givenName" data-patient="givenName" autocomplete="off">
+    </div>
+    <div class="field field--required">
+      <label for="patient-mrn" id="patient-mrn-label">MRN</label>
+      <input type="text" id="patient-mrn" data-patient="mrn" autocomplete="off" inputmode="numeric">
+    </div>
+    <div class="field field--required">
+      <label for="patient-dateOfBirth">Date of birth</label>
+      <input type="date" id="patient-dateOfBirth" data-patient="dateOfBirth">
+    </div>
+    <div class="field">
+      <label for="patient-sex">Sex</label>
+      <input type="text" id="patient-sex" data-patient="sex" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="patient-ward">Ward / unit</label>
+      <input type="text" id="patient-ward" data-patient="ward" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="patient-encounter">Encounter / admission</label>
+      <input type="text" id="patient-encounter" data-patient="encounter" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="exam-examDate">Exam date</label>
+      <input type="date" id="exam-examDate" data-exam="examDate">
+    </div>
+    <div class="field">
+      <label for="exam-examTime">Exam time</label>
+      <input type="time" id="exam-examTime" data-exam="examTime">
+    </div>
+    <div class="field">
+      <label for="exam-examiner">Examiner</label>
+      <input type="text" id="exam-examiner" data-exam="examiner" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="exam-examinerRole">Role</label>
+      <input type="text" id="exam-examinerRole" data-exam="examinerRole" autocomplete="off">
+    </div>
+  </div>
+</section>
+
+<main class="workspace">
+  <section class="worksheet" aria-labelledby="worksheet-heading">
+    <div class="worksheet__toolbar">
+      <h2 id="worksheet-heading">Examination</h2>
+      <div class="worksheet__hints">
+        <span><kbd>0</kbd>–<kbd>5</kbd> value</span>
+        <span><kbd>N</kbd> not testable</span>
+        <span><kbd>*</kbd> non-SCI</span>
+        <span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> move</span>
+        <span><kbd>Enter</kbd> next blank</span>
+      </div>
+      <div class="worksheet__quick">
+        <button type="button" class="btn btn--small" id="action-fill-normal">Fill remaining as normal</button>
+        <button type="button" class="btn btn--small" id="action-clear-exam">Clear values</button>
+      </div>
+    </div>
+
+    <div class="grid-wrap">
+      <table class="grid" id="exam-grid">
+        <caption class="visually-hidden">
+          Dermatome and myotome values. Use the arrow keys to move between cells and the
+          number keys to enter a value.
+        </caption>
+        <thead>
+          <tr class="grid__sides">
+            <th colspan="3" scope="colgroup">Right</th>
+            <th scope="col" class="grid__centre-head">Level</th>
+            <th colspan="3" scope="colgroup">Left</th>
+          </tr>
+          <tr class="grid__columns">
+            <th scope="col">Motor</th>
+            <th scope="col">Light touch</th>
+            <th scope="col">Pin prick</th>
+            <th scope="col">Key muscle</th>
+            <th scope="col">Light touch</th>
+            <th scope="col">Pin prick</th>
+            <th scope="col">Motor</th>
+          </tr>
+        </thead>
+        <tbody id="exam-grid-body"></tbody>
+      </table>
+    </div>
+
+    <div class="extras">
+      <fieldset class="extras__group">
+        <legend>Voluntary anal contraction (VAC)</legend>
+        <div class="segmented" data-binary="voluntaryAnalContraction" role="radiogroup"
+             aria-label="Voluntary anal contraction"></div>
+      </fieldset>
+      <fieldset class="extras__group">
+        <legend>Deep anal pressure (DAP)</legend>
+        <div class="segmented" data-binary="deepAnalPressure" role="radiogroup"
+             aria-label="Deep anal pressure"></div>
+      </fieldset>
+      <div class="extras__group">
+        <label for="nonkey-right">Lowest non-key muscle, right</label>
+        <select id="nonkey-right" data-nonkey="right"></select>
+      </div>
+      <div class="extras__group">
+        <label for="nonkey-left">Lowest non-key muscle, left</label>
+        <select id="nonkey-left" data-nonkey="left"></select>
+      </div>
+      <div class="extras__group extras__group--wide">
+        <label for="exam-comments">Comments / non-SCI findings</label>
+        <textarea id="exam-comments" data-exam="comments" rows="3"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <aside class="results" aria-labelledby="results-heading">
+    <h2 id="results-heading">Classification</h2>
+    <div id="results-panel"></div>
+  </aside>
+</main>
+
+<div class="keypad" id="keypad" hidden role="dialog" aria-label="Enter a value">
+  <div class="keypad__title" id="keypad-title"></div>
+  <div class="keypad__values" id="keypad-values"></div>
+  <div class="keypad__stars" id="keypad-stars"></div>
+  <button type="button" class="keypad__clear" id="keypad-clear">Clear cell</button>
+</div>
+
+<dialog class="preview" id="preview-dialog" aria-labelledby="preview-heading">
+  <div class="preview__bar">
+    <h2 id="preview-heading">Exported form</h2>
+    <div class="preview__actions">
+      <button type="button" class="btn btn--primary" id="export-pdf">Download PDF</button>
+      <button type="button" class="btn" id="export-png">PNG</button>
+      <button type="button" class="btn" id="export-svg">SVG</button>
+      <button type="button" class="btn" id="export-print">Print</button>
+      <button type="button" class="btn" id="export-upload" hidden>Send to record</button>
+      <button type="button" class="btn" id="preview-close">Close</button>
+    </div>
+  </div>
+  <p class="preview__warning" id="preview-warning" hidden></p>
+  <div class="preview__pages" id="preview-pages"></div>
+</dialog>
+
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

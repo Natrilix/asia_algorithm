@@ -6,8 +6,11 @@
   "module": "./esm/ISNCSCI.js",
   "scripts": {
     "build": "rollup -c",
+    "build:webapp-vendor": "rollup -c && node scripts/vendor-algorithm.mjs",
     "test": "jest && eslint **/*.ts && cspell **",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:webapp": "node --test webapp/test/*.check.js",
+    "serve:webapp": "npx --yes http-server webapp -p 8080 -c-1"
   },
   "author": "Praxis Spinal Cord Institute",
   "license": "Apache-2.0",
