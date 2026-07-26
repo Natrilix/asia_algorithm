@@ -14,7 +14,7 @@
  */
 
 import { EntraAuth, SignInRequiredError } from '../auth/pkce.js';
-import { normaliseRecord } from './index.js';
+import { normaliseRecord } from './record.js';
 
 const SCOPE = 'https://analysis.windows.net/powerbi/api/Dataset.Read.All';
 const MAX_QUERY_LENGTH = 64;

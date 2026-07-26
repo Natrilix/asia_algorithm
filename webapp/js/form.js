@@ -240,6 +240,7 @@ export class ExamGrid {
 
     if (event.key === 'Backspace' || event.key === 'Delete') {
       event.preventDefault();
+      this.justAdvancedFrom = null;
       this.writeCell(side, kind, level, '');
       return;
     }
@@ -297,9 +298,11 @@ export class ExamGrid {
     const current = splitValue(getCell(this.store.state, side, kind, level));
     const star = canBeStarred(base, kind) ? current.star : '';
     this.writeCell(side, kind, level, joinValue(base, star, kind), options);
-    this.lastWritten = { side, kind, level };
     if (!options.keepOpen) {
       this.move(side, kind, level, 0, 1, { silent: true });
+      // Set after the move: `move` clears it, and the whole point is to
+      // remember the cell we just left. See `cycleStar`.
+      this.justAdvancedFrom = { side, kind, level };
     }
   }
 
@@ -308,16 +311,13 @@ export class ExamGrid {
    *
    * Typing a value advances to the next cell, so by the time the examiner
    * reaches for `*` the selection has already moved on. Reading "4 then *" as
-   * "a starred 4" is what they mean, so when the current cell is still empty
-   * the star is applied to the value just entered. Focus stays put, which keeps
-   * a run of values flowing without a detour.
+   * "a starred 4" is what they mean, so a star immediately after a value goes
+   * to the cell that value went into. Focus stays put, which keeps a run of
+   * values flowing without a detour. Any deliberate navigation — a click, an
+   * arrow key, Enter — clears this, so `*` then targets the selected cell.
    */
   cycleStar(side, kind, level) {
-    let target = { side, kind, level };
-    if (!splitValue(getCell(this.store.state, side, kind, level)).base && this.lastWritten) {
-      target = this.lastWritten;
-    }
-
+    const target = this.justAdvancedFrom ?? { side, kind, level };
     const current = splitValue(getCell(this.store.state, target.side, target.kind, target.level));
     if (!current.base || !canBeStarred(current.base, target.kind)) {
       return;
@@ -336,6 +336,7 @@ export class ExamGrid {
   /* ------------------------------------------------------------- navigation */
 
   move(side, kind, level, dx, dy, options = {}) {
+    this.justAdvancedFrom = null;
     let columnIndex = COLUMNS.findIndex((column) => column.side === side && column.kind === kind);
     let levelIndex = SENSORY_LEVELS.indexOf(level);
 
@@ -403,6 +404,7 @@ export class ExamGrid {
     if (!button) {
       return;
     }
+    this.justAdvancedFrom = null;
     if (this.activeButton) {
       this.activeButton.classList.remove('is-active');
     }

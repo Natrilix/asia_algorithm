@@ -30,9 +30,13 @@ export const DEFAULT_CONFIG = {
    */
   autosave: true,
 
-  /** Patient lookup. provider: 'none' | 'demo' | 'rest' | 'powerbi'. */
+  /**
+   * Patient lookup. provider: 'none' | 'demo' | 'rest' | 'powerbi'.
+   * Defaults to 'none' — identifiers are typed by hand and the search box is
+   * hidden until a site configures a source.
+   */
   lookup: {
-    provider: 'demo',
+    provider: 'none',
     minQueryLength: 2,
     maxResults: 25,
 
@@ -117,12 +121,22 @@ export function mergeConfig(base, override) {
 
 /**
  * Loads `config.json`. A missing file is not an error — the defaults are a
- * complete, working configuration (demo lookup, no upload).
+ * complete, working configuration (no lookup, no upload).
+ *
+ * The single-file build bakes the configuration into `window.__ISNCSCI_CONFIG__`
+ * because `fetch` is unavailable on `file://` URLs; that takes precedence.
  */
 export async function loadConfig(url = 'config.json') {
   if (cachedConfig) {
     return cachedConfig;
   }
+
+  const baked = globalThis.__ISNCSCI_CONFIG__;
+  if (baked) {
+    cachedConfig = mergeConfig(DEFAULT_CONFIG, baked);
+    return cachedConfig;
+  }
+
   let override = null;
   try {
     const response = await fetch(url, { cache: 'no-cache' });

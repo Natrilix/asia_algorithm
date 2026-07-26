@@ -9,12 +9,22 @@ which is used unchanged.
 
 ## What it is
 
-**Static files. No build step, no dependencies, no CDN.** Copy this directory to
-a web server and it runs. Everything — the grid, the classification, the SVG
-preview, the PNG, and the PDF writer — is plain ES modules in `js/`.
+**Static. No dependencies, no CDN, nothing to install.** Everything — the grid,
+the classification, the SVG preview, the PNG, and the PDF writer — is plain ES
+modules in `js/`.
+
+It ships two ways:
+
+- **`dist/isncsci-worksheet.html`** — the entire application in one file, for a
+  file share. Double-click to open; no web server involved. Browsers refuse to
+  load external ES modules over `file://`, so this build inlines everything into
+  one document. Rebuild with `npm run build:single-file`.
+- **this directory** — the same application as separate files, for hosting on a
+  web server. Required if you want patient lookup, which needs a real origin.
 
 ```bash
-npm run serve:webapp       # from the repository root, then open localhost:8080
+npm run build:single-file  # from the repository root -> dist/isncsci-worksheet.html
+npm run serve:webapp       # or serve this directory at localhost:8080
 ```
 
 ## What it adds over the public form
@@ -23,7 +33,8 @@ npm run serve:webapp       # from the repository root, then open localhost:8080
   repeated in the header band and footer of every page.
 - **Patient lookup** of currently admitted patients, from a Power BI semantic
   model (no backend at all), an internal REST endpoint, or the optional MSSQL
-  service in `../server`.
+  service in `../server`. Off by default — identifiers are typed by hand until a
+  site configures a source.
 - **Institution-specific configuration** — name, paper size, the label your site
   uses for the MRN, which identifiers are mandatory.
 - **An optional "send to record" upload** for document-intake endpoints.
@@ -65,6 +76,7 @@ index.html            page shell
 css/app.css           all styling, including the print stylesheet
 config.json           deployment configuration (see config.sample.json)
 data/                 demo patient fixture
+dist/                 single-file build for a file share (npm run build:single-file)
 vendor/               committed build of the algorithm (npm run build:webapp-vendor)
 js/
   app.js              entry point and wiring
@@ -79,7 +91,7 @@ js/
   export.js           PDF / PNG / SVG / JSON / print / upload
   format.js           date and name formatting
   auth/pkce.js        Entra ID sign-in (authorisation code + PKCE)
-  lookup/             demo, rest and powerbi providers behind one interface
+  lookup/             registry, record shape, and the demo/rest/powerbi providers
   render/
     drawing.js        display list primitives
     worksheet.js      the printable form layout

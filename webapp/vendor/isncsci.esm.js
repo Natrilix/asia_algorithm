@@ -1,3 +1,4 @@
+/* Built from src/ by "npm run build:webapp-vendor". Do not edit by hand. */
 var MotorLevels = [
     'C5', 'C6', 'C7', 'C8', 'T1',
     'L2', 'L3', 'L4', 'L5', 'S1',

@@ -11,7 +11,7 @@
  *   { results: [ ... ] }
  */
 
-import { normaliseRecord } from './index.js';
+import { normaliseRecord } from './record.js';
 
 export function createRestProvider(config) {
   const settings = config.lookup ?? {};

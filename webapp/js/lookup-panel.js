@@ -6,7 +6,8 @@
  * `createLookupProvider` so this file never changes when the data source does.
  */
 
-import { createLookupProvider, normaliseQuery } from './lookup/index.js';
+import { createLookupProvider } from './lookup/index.js';
+import { normaliseQuery } from './lookup/record.js';
 import { SignInRequiredError } from './auth/pkce.js';
 import { formatDate } from './format.js';
 

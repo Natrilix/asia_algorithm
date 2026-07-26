@@ -1,14 +1,19 @@
 # Deploying the ISNCSCI worksheet
 
-The worksheet in `webapp/` is a static site. There is no build step, no
-framework, no package to install and no outbound request to any third party.
-Copy the directory onto a web server and it works.
+The worksheet is a static application with no framework, no package to install
+and no outbound request to any third party. It ships in two forms:
+
+- **`webapp/dist/isncsci-worksheet.html`** — the whole thing in one file. Copy it
+  to a file share and double-click it. No server at all.
+- **`webapp/`** — the same application as separate files, for hosting on a web
+  server. Needed only if you want patient lookup or the upload endpoint.
 
 Everything below is about the two things that *can* need infrastructure: looking
 up a patient, and (optionally) sending the finished PDF somewhere.
 
 - [Quick start](#quick-start)
-- [Hosting](#hosting)
+- [Deploying to a file share](#deploying-to-a-file-share)
+- [Hosting on a web server](#hosting-on-a-web-server)
 - [Configuration](#configuration)
 - [Patient lookup](#patient-lookup)
   - [Option A — Power BI, no backend](#option-a--power-bi-no-backend)
@@ -21,21 +26,57 @@ up a patient, and (optionally) sending the finished PDF somewhere.
 ## Quick start
 
 ```bash
-npm run serve:webapp        # http://localhost:8080, demo patient data
+npm run build:single-file   # webapp/dist/isncsci-worksheet.html
+npm run serve:webapp        # or run the multi-file app at localhost:8080
 ```
 
-The shipped `webapp/config.json` uses the `demo` lookup provider, which reads
-`webapp/data/demo-patients.json`. No real patient data is involved, so this is
-safe for training and demonstrations.
+Out of the box `lookup.provider` is `none`: patient identifiers are typed by
+hand and the search box is hidden. Set it to `demo` to try the search UI against
+`webapp/data/demo-patients.json`, which contains no real patient data.
 
-## Hosting
+## Deploying to a file share
 
-Any static web server will do. Two things matter:
+**Use `webapp/dist/isncsci-worksheet.html`.** It is the entire application —
+markup, styles, the algorithm and all configuration — in one file that opens by
+double-clicking, with no web server and no install.
 
-1. **Serve `webapp/` over HTTP(S), not `file://`.** The app is made of ES
-   modules and reads `config.json` with `fetch`; browsers block both on
-   `file://` origins. (It degrades rather than breaks — you get the built-in
-   defaults and no lookup — but do not deploy that way.)
+```bash
+npm run build:single-file
+cp webapp/dist/isncsci-worksheet.html //fileserver/share/clinical-tools/
+```
+
+This build exists because browsers will not load external ES modules over
+`file://` and block `fetch` there outright, so the multi-file app in `webapp/`
+cannot run from a share. An *inline* module script does run, so the build inlines
+everything into one document and bakes `config.json` and the demo fixture into
+the page.
+
+Rebuild and re-copy after changing anything under `webapp/`. `npm run test:webapp`
+includes checks that the bundle stays self-contained.
+
+**What still works from a file share:** the whole worksheet, live classification,
+and PDF, PNG, SVG and JSON export. Autosave works (`sessionStorage` is available
+on `file://`).
+
+**What does not:** the Power BI and REST lookup providers. A `file://` page has
+an opaque origin, so it cannot sign in with a redirect or call an internal API.
+This is why manual entry is the default. If you later want lookup, host the
+multi-file app on a web server instead — the code is the same.
+
+**The "send to record" upload is a caveat, not a certainty.** A POST from a
+`file://` page is cross-origin and arrives with `Origin: null`. Most intake
+endpoints reject that. It will work only if the receiving endpoint explicitly
+allows `Origin: null` — which is a weak control, since any local page can then
+post to it. If filing the PDF automatically matters more than avoiding a server,
+host the app on an intranet web server and put the upload endpoint on the same
+origin; then no CORS is involved at all.
+
+## Hosting on a web server
+
+Use the multi-file `webapp/` directory when you want patient lookup or the
+upload endpoint. Two things matter:
+
+1. **Serve over HTTP(S).** Same `file://` restrictions as above apply.
 2. **Serve `.js` as `text/javascript` and `.json` as `application/json`.**
    Default on nginx and modern IIS; older IIS installs may need the MIME type
    added.
@@ -211,6 +252,9 @@ button appears in the export dialog. It POSTs `multipart/form-data`:
 
 Leave `upload.url` empty and the button never appears.
 
+If you are deploying to a file share, read the `Origin: null` caveat in
+[Deploying to a file share](#deploying-to-a-file-share) before relying on this.
+
 ## Information governance
 
 Points your privacy or security review will ask about:
@@ -254,11 +298,16 @@ The worksheet uses a committed copy of the algorithm at
 anything under `src/`:
 
 ```bash
-npm run build:webapp-vendor   # rebuilds and re-vendors the bundle
-npm run test:webapp           # model, render and lookup checks
+npm run build:webapp-vendor   # rebuilds and re-vendors the algorithm
+npm run build:single-file     # rebuilds the file-share bundle
+npm run test:webapp           # model, render, lookup and bundle checks
 npm test                      # the library's own suite
-git add webapp/vendor/isncsci.esm.js
+git add webapp/vendor/isncsci.esm.js webapp/dist/isncsci-worksheet.html
 ```
+
+After changing anything under `webapp/`, rebuild the single-file bundle and
+re-copy it to the share — it is a build artifact, not a live view of the
+source.
 
 `npm run test:webapp` runs `webapp/test/*.check.js` with the Node test runner.
 They are named `.check.js` rather than `.test.js` so Jest, which owns the

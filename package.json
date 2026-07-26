@@ -7,6 +7,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:webapp-vendor": "rollup -c && node scripts/vendor-algorithm.mjs",
+    "build:single-file": "node scripts/build-single-file.mjs",
     "test": "jest && eslint **/*.ts && cspell **",
     "test:watch": "jest --watch",
     "test:webapp": "node --test webapp/test/*.check.js",

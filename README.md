@@ -259,20 +259,23 @@ You can view the test for `*.html` file by opening it on any modern browser that
 This repository also contains a browser-based ISNCSCI examination form built on
 the algorithm above, in [`webapp/`](webapp/README.md).
 
-It is a static site — no build step, no dependencies, no CDN — that adds what an
-institution needs on top of the classification itself:
+It is static — no dependencies, no CDN — and ships both as a directory to host on
+a web server and as a single self-contained HTML file that runs from a file share
+with no server at all. It adds what an institution needs on top of the
+classification itself:
 
 - a full data-entry worksheet with live classification and keyboard-first entry;
 - three points of patient identification, enforced before export and printed on
   every page of the produced form;
-- lookup of currently admitted patients from a Power BI semantic model (with no
-  backend at all), an internal REST endpoint, or the optional MSSQL service in
-  [`server/`](server/README.md);
+- optional lookup of currently admitted patients from a Power BI semantic model
+  (with no backend at all), an internal REST endpoint, or the optional MSSQL
+  service in [`server/`](server/README.md);
 - export to a vector PDF, PNG or SVG, generated entirely in the browser.
 
 ```
-npm run serve:webapp     # http://localhost:8080, demo patient data
-npm run test:webapp      # model, render and lookup checks
+npm run build:single-file   # webapp/dist/isncsci-worksheet.html, for a file share
+npm run serve:webapp        # or host the multi-file app at localhost:8080
+npm run test:webapp         # model, render, lookup and bundle checks
 ```
 
 See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for hosting, configuration and

@@ -1,9 +1,13 @@
 {
   "institutionName": "ISNCSCI worksheet",
   "pageSize": "A4",
-  "requiredPatientFields": ["name", "mrn", "dateOfBirth"],
+  "requiredPatientFields": [
+    "name",
+    "mrn",
+    "dateOfBirth"
+  ],
   "autosave": true,
   "lookup": {
-    "provider": "demo"
+    "provider": "none"
   }
 }

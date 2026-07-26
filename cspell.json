@@ -16,14 +16,12 @@
     "prebuild",
     "sourcemap",
     "zpp",
-
     "appbar",
     "discoverability",
     "dorsiflexors",
     "nonkey",
     "starrable",
     "UEMS",
-
     "Entra",
     "MSAL",
     "nosniff",
@@ -34,16 +32,13 @@
     "SEARCHSTRING",
     "TOPN",
     "xlink",
-
     "nendobj",
     "nendstream",
     "startxref",
     "unmappable",
-
     "Sampleperson",
     "TESTPATIENT",
     "Testpatient",
-
     "authorisation",
     "authorised",
     "behaviour",
@@ -61,6 +56,9 @@
     "sanitised",
     "sanitises",
     "serialisable",
-    "Serialises"
+    "Serialises",
+    "fileserver",
+    "inlines",
+    "unrecognised"
   ]
 }
