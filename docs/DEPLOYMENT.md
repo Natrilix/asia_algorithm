@@ -300,10 +300,15 @@ anything under `src/`:
 ```bash
 npm run build:webapp-vendor   # rebuilds and re-vendors the algorithm
 npm run build:single-file     # rebuilds the file-share bundle
-npm run test:webapp           # model, render, lookup and bundle checks
-npm test                      # the library's own suite
+npm test                      # everything: jest, lint, cspell, worksheet checks
 git add webapp/vendor/isncsci.esm.js webapp/dist/isncsci-worksheet.html
 ```
+
+`npm test` is the single gate — it runs the library's jest suite, lints both the
+TypeScript and the worksheet's JavaScript, spell-checks, and then runs the
+worksheet's own checks (`npm run test:webapp` alone if you want just those).
+CI runs it on Node 18, 20 and 22; Node 18 is the floor, because the worksheet's
+checks use the built-in test runner.
 
 After changing anything under `webapp/`, rebuild the single-file bundle and
 re-copy it to the share — it is a build artifact, not a live view of the

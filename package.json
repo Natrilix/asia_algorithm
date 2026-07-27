@@ -8,7 +8,8 @@
     "build": "rollup -c",
     "build:webapp-vendor": "rollup -c && node scripts/vendor-algorithm.mjs",
     "build:single-file": "node scripts/build-single-file.mjs",
-    "test": "jest && eslint **/*.ts && cspell **",
+    "lint": "eslint \"**/*.ts\" \"webapp/js/**/*.js\" \"webapp/test/**/*.js\" \"server/**/*.js\" \"scripts/**/*.mjs\"",
+    "test": "jest && npm run lint && cspell ** && npm run test:webapp",
     "test:watch": "jest --watch",
     "test:webapp": "node --test webapp/test/*.check.js",
     "serve:webapp": "npx --yes http-server webapp -p 8080 -c-1"
