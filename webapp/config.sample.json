@@ -1,0 +1,49 @@
+{
+  "_comment": [
+    "Copy this file to config.json and edit. Every key is optional - anything",
+    "omitted falls back to the defaults in js/config.js. See docs/DEPLOYMENT.md."
+  ],
+  "institutionName": "Example Health Service",
+  "siteName": "Spinal Unit",
+  "pageSize": "A4",
+  "mrnLabel": "MRN",
+  "requiredPatientFields": [
+    "name",
+    "mrn",
+    "dateOfBirth"
+  ],
+  "autosave": true,
+  "lookup": {
+    "provider": "demo",
+    "minQueryLength": 2,
+    "maxResults": 25,
+    "rest": {
+      "url": "/api/patients/search",
+      "queryParameter": "q",
+      "credentials": "include",
+      "headers": {}
+    },
+    "powerbi": {
+      "tenantId": "00000000-0000-0000-0000-000000000000",
+      "clientId": "00000000-0000-0000-0000-000000000000",
+      "datasetId": "00000000-0000-0000-0000-000000000000",
+      "groupId": "",
+      "dax": "EVALUATE\nTOPN(\n  25,\n  FILTER(\n    'Admitted Patients',\n    CONTAINSSTRING('Admitted Patients'[MRN], \"{{query}}\")\n      || CONTAINSSTRING('Admitted Patients'[FamilyName], \"{{query}}\")\n  ),\n  'Admitted Patients'[FamilyName], ASC\n)",
+      "resultColumns": {
+        "mrn": "Admitted Patients[MRN]",
+        "familyName": "Admitted Patients[FamilyName]",
+        "givenName": "Admitted Patients[GivenName]",
+        "dateOfBirth": "Admitted Patients[DateOfBirth]",
+        "sex": "Admitted Patients[Sex]",
+        "ward": "Admitted Patients[Ward]",
+        "encounter": "Admitted Patients[EncounterId]"
+      }
+    }
+  },
+  "upload": {
+    "url": "",
+    "credentials": "include",
+    "headers": {},
+    "buttonLabel": "Send to record"
+  }
+}

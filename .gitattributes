@@ -1,0 +1,4 @@
+# Generated artifacts. They are committed so the worksheet deploys with no build
+# step, but they are build output: review the sources, not these.
+webapp/vendor/isncsci.esm.js  linguist-generated=true text eol=lf
+webapp/dist/isncsci-worksheet.html  linguist-generated=true text eol=lf

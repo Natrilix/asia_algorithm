@@ -11,18 +11,93 @@
     "ignorePatterns": [
         "**/*.d.ts",
         "**/*.js",
-        "dist"
+        "!webapp/js/**/*.js",
+        "!webapp/test/**/*.js",
+        "!server/**/*.js",
+        "dist",
+        "webapp/dist",
+        "webapp/vendor"
     ],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": [
+        "@typescript-eslint"
+    ],
     "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module"
     },
     "root": true,
     "rules": {
-        "@typescript-eslint/indent": ["error", 2],
-        "no-multiple-empty-lines": ["error", {"max": 1, "maxEOF": 0}],
+        "@typescript-eslint/indent": [
+            "error",
+            2
+        ],
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 1,
+                "maxEOF": 0
+            }
+        ],
         "no-trailing-spaces": "error"
-    }
+    },
+    "overrides": [
+        {
+            "files": [
+                "webapp/js/**/*.js",
+                "webapp/test/**/*.js",
+                "server/**/*.js",
+                "scripts/**/*.mjs"
+            ],
+            "parser": "espree",
+            "extends": [
+                "eslint:recommended"
+            ],
+            "parserOptions": {
+                "ecmaVersion": 2021,
+                "sourceType": "module"
+            },
+            "rules": {
+                "@typescript-eslint/indent": "off",
+                "@typescript-eslint/no-unused-vars": "off",
+                "@typescript-eslint/no-var-requires": "off",
+                "indent": [
+                    "error",
+                    2,
+                    {
+                        "SwitchCase": 1
+                    }
+                ],
+                "semi": [
+                    "error",
+                    "always"
+                ],
+                "quotes": [
+                    "error",
+                    "single",
+                    {
+                        "avoidEscape": true
+                    }
+                ],
+                "@typescript-eslint/explicit-module-boundary-types": "off",
+                "@typescript-eslint/no-explicit-any": "off",
+                "@typescript-eslint/ban-ts-comment": "off",
+                "@typescript-eslint/no-empty-function": "off"
+            },
+            "env": {
+                "es2020": true
+            }
+        },
+        {
+            "files": [
+                "webapp/test/**/*.js",
+                "server/**/*.js",
+                "scripts/**/*.mjs"
+            ],
+            "env": {
+                "browser": false,
+                "node": true
+            }
+        }
+    ]
 }

@@ -1,0 +1,17 @@
+{
+  "name": "isncsci-lookup-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Optional read-only patient lookup service for the ISNCSCI worksheet. Not required by the worksheet itself.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "mssql": "^11.0.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
