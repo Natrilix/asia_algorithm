@@ -68,6 +68,7 @@ credentials in the environment so they never sit on disk.
 | `rateLimit` | — | Per user (or per IP when anonymous). |
 | `auditLogPath` | — | JSON lines. Defaults to stdout. |
 | `allowedOrigins` | — | Leave empty for same-origin deployments. |
+| `allowedHeaders` | `["Accept"]` | Request headers a cross-origin caller may send. If the worksheet is configured with `lookup.rest.headers` — an API key, say — name them here or the browser blocks the request at preflight. `Accept` is always allowed. |
 
 ## Security notes
 

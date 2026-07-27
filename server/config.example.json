@@ -4,15 +4,17 @@
   "basePath": "/api/patients/search",
   "maxResults": 25,
   "minQueryLength": 2,
-
-  "rateLimit": { "windowMs": 60000, "max": 60 },
-
+  "rateLimit": {
+    "windowMs": 60000,
+    "max": 60
+  },
   "allowedOrigins": [],
-
+  "allowedHeaders": [
+    "Accept"
+  ],
   "userHeader": "x-forwarded-user",
   "requireUser": true,
   "auditLogPath": "/var/log/isncsci/lookup-audit.log",
-
   "sql": {
     "query": "SELECT TOP (@limit) MRN AS mrn, FamilyName AS familyName, GivenName AS givenName, DateOfBirth AS dateOfBirth, Sex AS sex, Ward AS ward, EncounterId AS encounter FROM dbo.vw_AdmittedPatients WHERE MRN = @q OR FamilyName LIKE @q + '%' ORDER BY FamilyName, GivenName",
     "connection": {

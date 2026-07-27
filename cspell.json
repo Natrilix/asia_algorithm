@@ -29,7 +29,6 @@
     "pkce",
     "powerbi",
     "recordset",
-    "SEARCHSTRING",
     "TOPN",
     "xlink",
     "nendobj",
@@ -59,6 +58,14 @@
     "Serialises",
     "fileserver",
     "inlines",
-    "unrecognised"
+    "unrecognised",
+    "CONTAINSSTRING",
+    "CONTAINSSTRINGEXACT",
+    "SELECTCOLUMNS",
+    "ADDCOLUMNS",
+    "SUMMARIZECOLUMNS",
+    "CALCULATETABLE",
+    "ISBLANK",
+    "SEARCHSTRING"
   ]
 }

@@ -178,7 +178,7 @@ Without this, queries fail with HTTP 403.
       "clientId": "<application (client) ID>",
       "datasetId": "<semantic model ID>",
       "groupId": "<workspace ID, or \"\" for My workspace>",
-      "dax": "EVALUATE TOPN(25, FILTER('Admitted Patients', SEARCHSTRING(\"{{query}}\", 'Admitted Patients'[MRN], 1, 0) > 0 || SEARCHSTRING(\"{{query}}\", 'Admitted Patients'[FamilyName], 1, 0) > 0), 'Admitted Patients'[FamilyName], ASC)",
+      "dax": "EVALUATE TOPN(25, FILTER('Admitted Patients', CONTAINSSTRING('Admitted Patients'[MRN], \"{{query}}\") || CONTAINSSTRING('Admitted Patients'[FamilyName], \"{{query}}\")), 'Admitted Patients'[FamilyName], ASC)",
       "resultColumns": {
         "mrn": "Admitted Patients[MRN]",
         "familyName": "Admitted Patients[FamilyName]",
@@ -229,6 +229,13 @@ The app issues `GET <url>?q=<text>&limit=<n>` and accepts either a bare array or
 rides the site's existing session, so Windows Authentication needs no extra
 configuration. Unknown fields are ignored and dates are accepted as ISO,
 ISO date-time, or SQL `yyyy-mm-dd hh:mm:ss`.
+
+You can add headers — an API key, say — with `rest.headers`. Note that a custom
+header makes a cross-origin request non-simple: the browser sends a preflight
+first, and the endpoint has to name that header in
+`Access-Control-Allow-Headers` or the request is blocked before it is sent. A
+same-origin URL avoids the problem entirely; for the bundled service, list the
+header in `allowedHeaders`.
 
 ### Option C — the bundled MSSQL service
 

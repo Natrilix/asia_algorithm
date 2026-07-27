@@ -22,7 +22,13 @@ if (!fs.existsSync(SOURCE)) {
 
 // The source map comment is dropped: the .map file is not shipped with the
 // worksheet, and a dangling reference makes browser dev tools complain.
-const bundle = fs.readFileSync(SOURCE, 'utf8').replace(/^\/\/# sourceMappingURL=.*$/m, '');
+//
+// Line endings are normalised to LF because the TypeScript helper banner the
+// compiler emits uses CRLF, which `git diff --check` reports as trailing
+// whitespace on every line of a file nobody edits by hand.
+const bundle = fs.readFileSync(SOURCE, 'utf8')
+  .replace(/\r\n/g, '\n')
+  .replace(/^\/\/# sourceMappingURL=.*$/m, '');
 
 const banner = '/* Built from src/ by "npm run build:webapp-vendor". Do not edit by hand. */\n';
 fs.mkdirSync(path.dirname(TARGET), { recursive: true });

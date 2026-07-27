@@ -33,6 +33,13 @@ const DEFAULTS = {
   rateLimit: { windowMs: 60_000, max: 60 },
   /** Empty means same-origin only: no CORS headers are sent. */
   allowedOrigins: [],
+  /**
+   * Request headers a cross-origin caller may send. The worksheet's REST
+   * provider forwards whatever `lookup.rest.headers` a site configures — an API
+   * key, say — and the browser blocks the request at preflight unless the
+   * header is named here.
+   */
+  allowedHeaders: ['Accept'],
   /** Header the reverse proxy sets with the authenticated user, for the audit log. */
   userHeader: 'x-forwarded-user',
   /** When true, a request without an authenticated user is refused. */
@@ -222,6 +229,37 @@ function corsHeaders(config, request) {
   };
 }
 
+/**
+ * Only names that are valid HTTP tokens, so a stray newline in the config
+ * cannot inject a second header into the response.
+ */
+function allowedHeaderNames(config) {
+  const names = Array.isArray(config.allowedHeaders) ? config.allowedHeaders : [];
+  const valid = names
+    .map((name) => String(name).trim())
+    .filter((name) => /^[A-Za-z0-9!#$%&'*+.^_`|~-]+$/.test(name));
+  // Accept is always sent by the provider, so it is allowed even if a site
+  // narrows the list and forgets it.
+  return [...new Set(['Accept', ...valid])];
+}
+
+/**
+ * Preflight response.
+ *
+ * Only sent to an origin that already passed `corsHeaders`; without that check
+ * this would advertise the allowlist to anyone who asked.
+ */
+function preflightHeaders(config, cors) {
+  if (!Object.keys(cors).length) {
+    return {};
+  }
+  return {
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': allowedHeaderNames(config).join(', '),
+    'Access-Control-Max-Age': '600',
+  };
+}
+
 export async function createServer(config = loadConfig()) {
   const allow = createRateLimiter(config.rateLimit);
   const audit = createAuditLog(config);
@@ -232,7 +270,7 @@ export async function createServer(config = loadConfig()) {
     const cors = corsHeaders(config, request);
 
     if (request.method === 'OPTIONS') {
-      response.writeHead(204, { ...cors, 'Access-Control-Allow-Headers': 'Accept' });
+      response.writeHead(204, { ...cors, ...preflightHeaders(config, cors) });
       response.end();
       return;
     }
@@ -299,4 +337,7 @@ if (process.argv[1] && import.meta.url === `file://${path.resolve(process.argv[1
   });
 }
 
-export { DEFAULTS, sanitiseQuery, shapeRow, toIsoDate, createRateLimiter };
+export {
+  DEFAULTS, sanitiseQuery, shapeRow, toIsoDate, createRateLimiter,
+  corsHeaders, preflightHeaders, allowedHeaderNames,
+};
